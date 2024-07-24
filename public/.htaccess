@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    # # Redirect requests for 'my-alias' to 'myfile.php'
+    # RewriteRule ^initial$ myfile.php [L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

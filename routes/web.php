@@ -1,92 +1,52 @@
 <?php
 
-use App\Http\Controllers\AlertNotification;
-use App\Http\Controllers\AttachmentController;
-use App\Http\Controllers\UploadFileController;
-use App\Models\User;
-use App\Models\Client;
-use App\Mail\SampleEmail;
-use Illuminate\Support\Facades\DB;
-use App\Models\InitialApplications;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EmailController;
-use App\Http\Controllers\PersonController;
-use App\Http\Controllers\InspectorController;
-use App\Http\Controllers\SampleInspectorController;
+use Illuminate\Support\Facades\Request;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/', function () {
-    return view('login');
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/Home', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard')->middleware('verified');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit')->middleware('verified');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware('verified');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy')->middleware('verified');
 });
 
-Route::controller(RegisterController::class)->group(function () {
-    Route::get('register', 'register')->name('register');
+Route::get('logout', function(){
+    auth()->logout();
+    return to_route('login');
 });
 
-Route::controller(LoginController::class)->group(function () {
-    Route::get('login', 'login')->name('login');
-});
+Route::get('/Initial', function () {
+    return view('Initial');
+})->middleware(['auth', 'verified'])->name('Initial');
+
+Route::get('/operational', function () {
+    return view('operational');
+})->middleware(['auth', 'verified'])->name('operational');
 
 
-Route::get('/welcome', function () {
-    return view('welcome');
-});
+//under initial folder routes -------------------------------------------------
+Route::get('/waterrefilling', function () {
+    return view('/initial/initial_wrs');
+})->middleware(['auth', 'verified'])->name('waterrefilling');
 
-// Route::get('/inspector', [InspectorController::class, 'index']);
+Route::get('/cemetery', function () {
+    return view('/initial/initial_cemetery');
+})->middleware(['auth', 'verified'])->name('cemetery');
 
-// Route::get('/getapps', [InspectorController::class, 'index']);
+Route::get('/funeral', function () {
+    return view('/initial/initial_funeral');
+})->middleware(['auth', 'verified'])->name('funeral');
 
-//View Inspector page
-Route::get('/inspector', function () {
-    return view('inspector');
-});
-
-//Retrieve data from controller to display on the DataTables in Inspector page
-Route::get('/initapps', [InspectorController::class, 'initapps']);
-Route::get('/opapps', [InspectorController::class, 'opapps']);
-
-//Perform update on 1 row of facility record in the Inspector Page for Initial Applications
-Route::put('set-initapp-inspection/{id}', [InspectorController::class, 'setInitAppInspection']);
-
-//Get the initial attachment based on the initial application's id
-Route::get('get-init-attachment/{id}', [AttachmentController::class, 'getInitAttachment']);
-
-//Example only
-Route::get('/sample', [SampleInspectorController::class, 'index']);
+//-----------------------------------------------------------------------------
 
 
-//Mail sending route
-Route::post('/send-email', [EmailController::class, 'sendEmail']);
-
-//Alert notification route
-Route::get('/get-alerts', [AlertNotification::class, 'getAlerts']);
-
-//Route for testing uploading file features
-Route::get('/uploadfile', [UploadFileController::class, 'upload']);
-Route::post('/uploadfile', [UploadFileController::class, 'uploadPost']);
-
-//Route for testing viewing upload files features
-Route::post('/viewtestfile', [AttachmentController::class, 'viewInitAttachment']);
-
-// Route::get('/viewtestfile', function(){
-//     return view('/testing/viewtestfile');
-// });
-
-// Route::get('/send-email', function(){
-//     Mail::to('recipient@example.com')->send(new SampleEmail());
-//     return "Email sent successfully";
-// });
-
-// Route::get('/pizzas', function(){
-
-//     $pizzas = [
-//         ['type'=> 'hawaiian', 'base'=>'cheesy crust'],
-//         ['type'=> 'volcano', 'base'=>'garlic crust'],
-//         ['type'=> 'veg supreme', 'base'=>'thin & crispy']
-//     ];
-
-//     return view('pizzas', ['pizzas'=> $pizzas]);
-// });
-
-// Auth::routes();
-
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+require __DIR__.'/auth.php';
