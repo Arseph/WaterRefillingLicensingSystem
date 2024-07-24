@@ -1,0 +1,30 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "watch": "npm-watch"
+    },
+    "watch": {
+        "build": {
+            "patterns": [
+                "src"
+            ],
+            "extensions": "js,jsx"
+        }
+    },
+    "devDependencies": {
+        "@popperjs/core": "^2.11.6",
+        "axios": "^1.6.4",
+        "bootstrap": "^5.3.3",
+        "jquery": "^3.7.1",
+        "laravel-vite-plugin": "^1.0",
+        "sass": "^1.56.1",
+        "vite": "^5.0"
+    },
+    "dependencies": {
+        "bootstrap-icons": "^1.11.3",
+        "npm-watch": "^0.12.0"
+    }
+}
